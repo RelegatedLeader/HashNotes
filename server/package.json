@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server/server.js",
-    "postinstall": "npm rebuild sqlite3",
+    "postinstall": "npm install sqlite3 && npm rebuild sqlite3",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,7 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.1",
+    "express": "^4.21.1"
+  },
+  "optionalDependencies": {
     "sqlite3": "^5.1.7"
   }
 }
