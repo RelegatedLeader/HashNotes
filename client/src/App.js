@@ -58,12 +58,10 @@ function NewNote() {
       .then((res) => {
         if (res.data && res.data.hash) {
           const generatedHash = res.data.hash;
+          setUserHash(generatedHash); // Store hash in state for copying
           alert(
-            `Your unique hash is: ${generatedHash}. Save it to access your notes.`
+            `Your unique hash is: ${generatedHash}. Make sure to copy the link provided after this!`
           );
-          setUserHash(generatedHash); // Save the hash to state for copying
-          localStorage.setItem('userHash', generatedHash);
-          navigate(`/notes/${generatedHash}`);
         } else {
           alert('Error: No hash returned from the server.');
         }
@@ -78,7 +76,10 @@ function NewNote() {
     navigator.clipboard
       .writeText(userHash)
       .then(() => {
-        alert('Hash copied to clipboard!');
+        alert(
+          'Hash copied to clipboard! Save it now to access your notes later.'
+        );
+        navigate(`/notes/${userHash}`);
       })
       .catch((err) => {
         console.error('Failed to copy hash:', err);
