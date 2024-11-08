@@ -21,7 +21,6 @@ function App() {
     </Router>
   );
 }
-//added this for randomness
 
 function Home() {
   const [hash, setHash] = useState('');
@@ -50,6 +49,7 @@ function Home() {
 
 function NewNote() {
   const [note, setNote] = useState({ title: '', text: '' });
+  const [userHash, setUserHash] = useState('');
   const navigate = useNavigate();
 
   const handleSaveFirstNote = () => {
@@ -57,11 +57,13 @@ function NewNote() {
       .post(`${apiUrl}/new-user-note`, note)
       .then((res) => {
         if (res.data && res.data.hash) {
+          const generatedHash = res.data.hash;
           alert(
-            `Your unique hash is: ${res.data.hash}. Save it to access your notes.`
+            `Your unique hash is: ${generatedHash}. Save it to access your notes.`
           );
-          localStorage.setItem('userHash', res.data.hash);
-          navigate(`/notes/${res.data.hash}`);
+          setUserHash(generatedHash); // Save the hash to state for copying
+          localStorage.setItem('userHash', generatedHash);
+          navigate(`/notes/${generatedHash}`);
         } else {
           alert('Error: No hash returned from the server.');
         }
@@ -69,6 +71,17 @@ function NewNote() {
       .catch((err) => {
         console.error('Failed to save note:', err);
         alert('Failed to save note. Please try again.');
+      });
+  };
+
+  const handleCopyHash = () => {
+    navigator.clipboard
+      .writeText(userHash)
+      .then(() => {
+        alert('Hash copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy hash:', err);
       });
   };
 
@@ -87,6 +100,7 @@ function NewNote() {
         onChange={(e) => setNote({ ...note, text: e.target.value })}
       />
       <button onClick={handleSaveFirstNote}>Save Note & Get Hash</button>
+      {userHash && <button onClick={handleCopyHash}>Copy Your Hash</button>}
     </div>
   );
 }
